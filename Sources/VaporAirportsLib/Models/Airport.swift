@@ -132,7 +132,7 @@ public struct AirportMigration<D>: Migration where D: QuerySupporting & SchemaSu
            let lat = touple.6
            let lon = touple.7
            let tz = touple.8
-            return Airport<Database>(airportICAO: icao, airportIATA: iata, airportName: name, airportCity: city, airportCountry: country, airportElevation: elevation, airportLat: lat, airportLon: lon, airportTimezone: tz, countryID:countryID).create(on: connection).map(to: Void.self) { _ in return }
+            return Airport<Database>(icao: icao, iata: iata, name: name, city: city, country: country, elevation: elevation, lat: lat, lon: lon, tz: tz, countryID: countryID).create(on: connection).map(to: Void.self) { _ in return }
             .create(on: connection)
             .map(to: Void.self) { _ in return }
         }
