@@ -144,7 +144,7 @@ public struct AirportMigration<D>: Migration where D: QuerySupporting & SchemaSu
   static func deleteAirports(on connection: Database.Connection, forCountryWithAlpha2 countryAlpha2: String, airports: [(icao: String, iata: String, name: String, city: String, country: String, elevation: Int, lat: Double, lon: Double, tz: String)]) -> Future<Void> {
     
     return getCountryID(on: connection, countryAlpha2: countryAlpha2)
-      .flatMap(to: Void.self) { continentID in
+      .flatMap(to: Void.self) { countryID in
         
         let futures = try airports.map { touple -> EventLoopFuture<Void> in
           
