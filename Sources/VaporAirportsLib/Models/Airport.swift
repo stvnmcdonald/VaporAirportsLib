@@ -21,12 +21,12 @@ public final class Airport<D>: Model where D: QuerySupporting, D: IndexSupportin
     return .init("airport")
   }
   
-  var id: Int?
+    var id: Int?
     var icao: String?
     var iata: String?
     var name: String?
     var city: String?
-    var country: String?
+    var countryAlpha2: String?
     var elevation: Int?
     var lat: Double?
     var lon: Double?
@@ -34,12 +34,12 @@ public final class Airport<D>: Model where D: QuerySupporting, D: IndexSupportin
     var countryID: Country<Database>.ID
   
 
-    init(icao: String?, iata: String?, name: String?, city: String?, country: String?, elevation: Int?, lat: Double?, lon: Double?, tz: String?, countryID: Country<Database>.ID) {
+    init(icao: String?, iata: String?, name: String?, city: String?, countryAlpha2: String?, elevation: Int?, lat: Double?, lon: Double?, tz: String?, countryID: Country<Database>.ID) {
         self.icao = icao
         self.iata = iata
         self.name = name
         self.city = city
-        self.country = country
+        self.countryAlpha = countryAlpha2
         self.elevation = elevation
         self.lat = lat
         self.lon = lon
@@ -77,7 +77,7 @@ public struct AirportMigration<D>: Migration where D: QuerySupporting & SchemaSu
       try builder.field(for: \Airport<Database>.iata)
       try builder.field(for: \Airport<Database>.name)
       try builder.field(for: \Airport<Database>.city)
-      try builder.field(for: \Airport<Database>.country)
+      try builder.field(for: \Airport<Database>.countryAlpha2)
       try builder.field(for: \Airport<Database>.elevation)
       try builder.field(for: \Airport<Database>.lat)
       try builder.field(for: \Airport<Database>.lon)
@@ -117,7 +117,7 @@ public struct AirportMigration<D>: Migration where D: QuerySupporting & SchemaSu
     }
   }
   
-  static func addAirports(on connection: Database.Connection, toCountryWithAlpha2 countryAlpha2: String, airports: [(icao: String, iata: String, name: String, city: String, country: String, elevation: Int, lat: Double, lon: Double, tz: String)]) -> Future<Void> {
+  static func addAirports(on connection: Database.Connection, toCountryWithAlpha2 countryAlpha2: String, airports: [(icao: String, iata: String, name: String, city: String, countryAlpha2: String, elevation: Int, lat: Double, lon: Double, tz: String)]) -> Future<Void> {
     
     return getCountryID(on: connection, countryAlpha2: countryAlpha2)
       .flatMap(to: Void.self) { countryID in
@@ -127,12 +127,12 @@ public struct AirportMigration<D>: Migration where D: QuerySupporting & SchemaSu
            let iata = touple.1
            let name = touple.2
            let city = touple.3
-           let country = touple.4
+           let countryAlpha2 = touple.4
            let elevation = touple.5
            let lat = touple.6
            let lon = touple.7
            let tz = touple.8
-            return Airport<Database>(icao: icao, iata: iata, name: name, city: city, country: country, elevation: elevation, lat: lat, lon: lon, tz: tz, countryID: countryID).create(on: connection).map(to: Void.self) { _ in return }
+            return Airport<Database>(icao: icao, iata: iata, name: name, city: city, countryAlpha2: countryAlpha2, elevation: elevation, lat: lat, lon: lon, tz: tz, countryID: countryID).create(on: connection).map(to: Void.self) { _ in return }
             .create(on: connection)
             .map(to: Void.self) { _ in return }
         }
@@ -141,7 +141,7 @@ public struct AirportMigration<D>: Migration where D: QuerySupporting & SchemaSu
     }
   }
   
-  static func deleteAirports(on connection: Database.Connection, forCountryWithAlpha2 countryAlpha2: String, airports: [(icao: String, iata: String, name: String, city: String, country: String, elevation: Int, lat: Double, lon: Double, tz: String)]) -> Future<Void> {
+  static func deleteAirports(on connection: Database.Connection, forCountryWithAlpha2 countryAlpha2: String, airports: [(icao: String, iata: String, name: String, city: String, countryAlpha2: String, elevation: Int, lat: Double, lon: Double, tz: String)]) -> Future<Void> {
     
     return getCountryID(on: connection, countryAlpha2: countryAlpha2)
       .flatMap(to: Void.self) { countryID in
