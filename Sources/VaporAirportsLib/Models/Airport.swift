@@ -39,7 +39,7 @@ public final class Airport<D>: Model where D: QuerySupporting, D: IndexSupportin
         self.iata = iata
         self.name = name
         self.city = city
-        self.countryAlpha = countryAlpha2
+        self.countryAlpha2 = countryAlpha2
         self.elevation = elevation
         self.lat = lat
         self.lon = lon
@@ -133,8 +133,6 @@ public struct AirportMigration<D>: Migration where D: QuerySupporting & SchemaSu
            let lon = touple.7
            let tz = touple.8
             return Airport<Database>(icao: icao, iata: iata, name: name, city: city, countryAlpha2: countryAlpha2, elevation: elevation, lat: lat, lon: lon, tz: tz, countryID: countryID).create(on: connection).map(to: Void.self) { _ in return }
-            .create(on: connection)
-            .map(to: Void.self) { _ in return }
         }
         
         return Future<Void>.andAll(futures, eventLoop: connection.eventLoop)
